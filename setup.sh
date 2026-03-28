@@ -7,19 +7,10 @@ cd "$SCRIPT_DIR"
 echo "=== Image Enhance — setup ==="
 echo ""
 
-# Ensure Python 3.11 is available (torch is not compatible with Python 3.12+)
-if ! /opt/homebrew/opt/python@3.11/bin/python3.11 --version &>/dev/null; then
-    echo "Installing Python 3.11 (required for AI model compatibility)..."
-    brew install python@3.11
-fi
-export UV_PYTHON=/opt/homebrew/opt/python@3.11/bin/python3.11
-
-# Install Tcl/Tk for Tkinter (required for the GUI, not bundled with Homebrew Python)
-if ! /opt/homebrew/opt/python@3.11/bin/python3.11 -c "import _tkinter" 2>/dev/null; then
-    echo "Installing python-tk@3.11 (required for GUI)..."
-    brew install python-tk@3.11 2>/dev/null || \
-        echo "  Warning: could not auto-install python-tk. Run: brew install python-tk@3.11"
-fi
+# Ensure Python 3.11 + Tcl/Tk are available (torch is not compatible with Python 3.12+)
+echo "Checking Python 3.11..."
+brew install python@3.11 python-tk@3.11
+PYTHON311="$(brew --prefix python@3.11)/bin/python3.11"
 
 # Install uv if missing
 if ! command -v uv &>/dev/null && [ ! -f "$HOME/.local/bin/uv" ]; then
@@ -30,7 +21,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Install Python dependencies
 echo "Installing Python dependencies (this may take a few minutes on first run)..."
-uv sync
+uv sync --python "$PYTHON311"
 echo ""
 
 # Download models
