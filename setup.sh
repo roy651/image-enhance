@@ -7,12 +7,18 @@ cd "$SCRIPT_DIR"
 echo "=== Image Enhance — setup ==="
 echo ""
 
+# Ensure Python 3.11 is available (torch is not compatible with Python 3.12+)
+if ! /opt/homebrew/opt/python@3.11/bin/python3.11 --version &>/dev/null; then
+    echo "Installing Python 3.11 (required for AI model compatibility)..."
+    brew install python@3.11
+fi
+export UV_PYTHON=/opt/homebrew/opt/python@3.11/bin/python3.11
+
 # Install Tcl/Tk for Tkinter (required for the GUI, not bundled with Homebrew Python)
-PY_VER=$(python3 --version 2>/dev/null | awk '{print $2}' | cut -d. -f1,2)
-if ! python3 -c "import _tkinter" 2>/dev/null; then
-    echo "Installing python-tk (required for GUI)..."
-    brew install "python-tk@${PY_VER}" 2>/dev/null || brew install python-tk 2>/dev/null || \
-        echo "  Warning: could not auto-install python-tk. Run: brew install python-tk@${PY_VER}"
+if ! /opt/homebrew/opt/python@3.11/bin/python3.11 -c "import _tkinter" 2>/dev/null; then
+    echo "Installing python-tk@3.11 (required for GUI)..."
+    brew install python-tk@3.11 2>/dev/null || \
+        echo "  Warning: could not auto-install python-tk. Run: brew install python-tk@3.11"
 fi
 
 # Install uv if missing

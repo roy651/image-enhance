@@ -2,10 +2,10 @@
 name = "image-enhance"
 version = "0.1.0"
 description = "Local AI image enhancement tools (upscaling, sharpening, face restoration)"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.12"
 dependencies = [
-    "torch>=2.0.1",
-    "torchvision>=0.15.2",
+    "torch>=2.0.1,<2.2",
+    "torchvision>=0.15.2,<0.17",
     "numpy<2",
     "basicsr==1.4.2",
     "facexlib==0.3.0",
