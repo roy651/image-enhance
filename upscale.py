@@ -30,6 +30,8 @@ def get_model_path(filename: str) -> Path:
 
 
 def get_device() -> str:
+    if torch.backends.mps.is_available():
+        return "mps"
     if torch.cuda.is_available():
         return "cuda"
     return "cpu"
@@ -44,7 +46,7 @@ def build_upsampler(config: dict, device: str) -> RealESRGANer:
         scale=config["scale"],
         model_path=str(get_model_path(config["filename"])),
         model=model,
-        tile=0, tile_pad=10, pre_pad=0, half=False,
+        tile=512, tile_pad=10, pre_pad=0, half=False,
         device=device,
     )
 

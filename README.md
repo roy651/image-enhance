@@ -24,6 +24,12 @@ python upscale.py <input> [output] [--scale 2|4] [--texture-strength N] [--face-
 | `--face-weight` | `0.5` | GFPGAN blend strength 0.0–1.0. Lower = more original texture, higher = more AI restoration |
 | `--model` | auto | Override model: `realesrgan-x4plus` or `realesrgan-x2plus` |
 
+**Recommended (portraits, 4K output):**
+```bash
+python upscale.py input.png output.png --scale 4 --texture-strength 1.0
+```
+Real-ESRGAN alone with texture blending gives the best results for portraits — faces stay sharp without over-smoothing skin and wrinkles. `--face-enhance` (GFPGAN) tends to over-smooth and isn't recommended unless faces are heavily degraded.
+
 **Examples:**
 ```bash
 # 2x upscale, preserving original skin/wrinkle texture
@@ -33,7 +39,8 @@ python upscale.py input.png output.png --scale 2 --texture-strength 1.2
 python upscale.py input.png output.png --scale 2 --texture-strength 0.8
 
 # Face image: upscale + face sharpening + texture preservation
-python upscale.py input.png output.png --scale 2 --face-enhance --face-weight 0.3 --texture-strength 1.0
+# Note: GFPGAN may over-smooth fine detail; lower --face-weight or skip if unwanted
+python upscale.py input.png output.png --scale 4 --face-enhance --face-weight 0.3 --texture-strength 1.0
 ```
 
 Output defaults to `<input>_upscaled.png` in the same directory.
