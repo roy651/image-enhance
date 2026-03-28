@@ -60,5 +60,5 @@ On first `--face-enhance` run, two face-detection auxiliary models (~185MB total
 ## Notes
 
 - No CUDA needed — runs natively on Apple Silicon via Metal (MPS)
-- Dependency pinning is critical: `torch==2.0.1`, `torchvision==0.15.2`, `numpy<2` — do not upgrade these
+- `numpy<2` is required — basicsr uses APIs removed in numpy 2.0; do not remove this constraint
 - The AI upscaler (Real-ESRGAN) tends to smooth fine skin texture. Use `--texture-strength` to recover it
