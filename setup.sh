@@ -55,39 +55,15 @@ download_if_missing \
     "models/GFPGANv1.4.pth"
 echo ""
 
-# Create ImageEnhance.app bundle
-APP="$SCRIPT_DIR/ImageEnhance.app"
-MACOS_DIR="$APP/Contents/MacOS"
-mkdir -p "$MACOS_DIR"
-
-cat > "$APP/Contents/Info.plist" <<PLIST
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>CFBundleExecutable</key>
-    <string>ImageEnhance</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.local.image-enhance</string>
-    <key>CFBundleName</key>
-    <string>Image Enhance</string>
-    <key>CFBundleVersion</key>
-    <string>1.0</string>
-    <key>LSMinimumSystemVersion</key>
-    <string>11.0</string>
-    <key>NSHighResolutionCapable</key>
-    <true/>
-</dict>
-</plist>
-PLIST
-
-cat > "$MACOS_DIR/ImageEnhance" <<LAUNCHER
-#!/bin/bash
-cd "$SCRIPT_DIR"
-"$SCRIPT_DIR/.venv/bin/python" "$SCRIPT_DIR/app.py"
-LAUNCHER
-
-chmod +x "$MACOS_DIR/ImageEnhance"
+# Create ImageEnhance.app using osacompile (produces a native arm64 binary, no Rosetta prompt)
+echo "Creating ImageEnhance.app..."
+rm -rf "$SCRIPT_DIR/ImageEnhance.app"
+TMPSCRIPT=$(mktemp /tmp/launcher_XXXXXX.applescript)
+cat > "$TMPSCRIPT" <<APPLESCRIPT
+do shell script "cd '${SCRIPT_DIR}' && '${SCRIPT_DIR}/.venv/bin/python' '${SCRIPT_DIR}/app.py' > /tmp/image-enhance.log 2>&1 &"
+APPLESCRIPT
+osacompile -o "$SCRIPT_DIR/ImageEnhance.app" "$TMPSCRIPT"
+rm "$TMPSCRIPT"
 
 echo "=== Setup complete ==="
 echo ""
