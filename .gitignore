@@ -12,3 +12,6 @@ wheels/
 # Model weights
 models/
 gfpgan/weights/
+
+# Generated app bundle
+ImageEnhance.app/
