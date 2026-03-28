@@ -7,6 +7,14 @@ cd "$SCRIPT_DIR"
 echo "=== Image Enhance — setup ==="
 echo ""
 
+# Install Tcl/Tk for Tkinter (required for the GUI, not bundled with Homebrew Python)
+PY_VER=$(python3 --version 2>/dev/null | awk '{print $2}' | cut -d. -f1,2)
+if ! python3 -c "import _tkinter" 2>/dev/null; then
+    echo "Installing python-tk (required for GUI)..."
+    brew install "python-tk@${PY_VER}" 2>/dev/null || brew install python-tk 2>/dev/null || \
+        echo "  Warning: could not auto-install python-tk. Run: brew install python-tk@${PY_VER}"
+fi
+
 # Install uv if missing
 if ! command -v uv &>/dev/null && [ ! -f "$HOME/.local/bin/uv" ]; then
     echo "Installing uv (Python package manager)..."
